@@ -31,7 +31,7 @@ func TestCounter(t *testing.T) {
 
 func TestSortCounter(t *testing.T) {
     input := map[string]int {"A":3, "B":2, "C":1};
-    expected := PairList{
+    expected := []Pair {
         {"A", 3},
         {"B", 2},
         {"C", 1},
