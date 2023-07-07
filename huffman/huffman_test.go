@@ -4,35 +4,58 @@ import (
     "testing"
     "reflect"
     "fmt"
+    "container/heap"
 )
 
-func TestCreateNodeList(t *testing.T) {
+func TestCreateNodeHeap(t *testing.T) {
     inputs := []string{"AAABBC", "AABBBCB", "BB", "CBCBAAA"};
-    expected := []NodeList {
-        {{"A", 3, nil, nil}, {"B", 2, nil, nil}, {"C", 1, nil, nil}},
-        {{"B", 4, nil, nil}, {"A", 2, nil, nil}, {"C", 1, nil, nil}},
-        {{"B", 2, nil, nil}},
-        {{"A", 3, nil, nil}, {"C", 2, nil, nil}, {"B", 2, nil, nil}},
+    expected := []NodeHeap {
+        {
+            {value: "A", freq: 3, index: -1},
+            {value: "B", freq: 2, index: -1},
+            {value: "C", freq: 1, index: -1},
+        },
+        {
+            {value: "B", freq: 4, index: -1},
+            {value: "A", freq: 2, index: -1},
+            {value: "C", freq: 1, index: -1},
+        },
+        {
+            {value: "B", freq: 2, index: -1},
+        },
+        {
+            {value: "A", freq: 3, index: -1},
+            {value: "C", freq: 2, index: -1},
+            {value: "B", freq: 2, index: -1},
+        },
     };
 
-    var outputs [4]NodeList;
+    var outputs [4]NodeHeap;
     for i, val := range inputs {
-        outputs[i] = CreateNodeList(val);
+        outputs[i] = createNodeHeap(val);
     }
 
-    for i, val := range outputs {
-        if !reflect.DeepEqual(val, expected[i]) {
-            t.Fatalf("Output: %v\nExpected: %v", val, expected[i]);
+    for i, nodeHeap := range outputs {
+        for j := range nodeHeap {
+            node := heap.Pop(&nodeHeap).(*Node)
+            if !reflect.DeepEqual(node, expected[i][j]) {
+                t.Fatalf("Output: %v\nExpected: %v", node, expected[i][j]);
+            }
         }
     }
-    fmt.Println("Counter tests passed");
+    fmt.Println("Create heap tests passed");
 }
 
 func TestIsLeafNode(t *testing.T) {
-    inputs := NodeList{
-        {"a", 4, nil, nil},
-        {"b", 10, &Node{"c",4,nil,nil}, &Node{"t",2,nil,nil}},
-        {"2", 10, nil, &Node{" ",2,nil,nil}},
+    inputs := NodeHeap{
+        {value: "a", freq: 4},
+        {
+            value: "b",
+            freq: 10, 
+            right: &Node{value: "c", freq: 4},
+            left: &Node{value: "t", freq: 2},
+        },
+        {value: "2", freq: 10, right: &Node{value: " ", freq: 2}},
     }
     expected := []bool{true, false, false}
     var outputs [3]bool;

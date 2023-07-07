@@ -1,8 +1,8 @@
 package main
 
 import (
-    "sort"
-    // "fmt"
+    "container/heap"
+    "fmt"
 )
 
 func Encode(s string) string {
@@ -15,27 +15,56 @@ type Node struct {
     freq int
     right *Node
     left *Node
+    parent *Node
+    index int
 }
 
-type NodeList []Node
+func (n Node) string() string {
+    return fmt.Sprintf("Node: value:%v freq:%v", n.value, n.freq)
+}
 
-func (n Node) isLeaf() bool {
+func (n *Node) isLeaf() bool {
     return n.right == nil && n.left == nil
 }
 
-func (n NodeList) Less(i, j int) bool {
-    return n[j].freq < n[i].freq
+type NodeHeap []*Node
+
+func (nh NodeHeap) Less(i, j int) bool {
+    if (nh[j].freq == nh[i].freq) {
+        return nh[j].value < nh[i].value
+    } else {
+        return nh[j].freq < nh[i].freq
+    }
 }
 
-func (n NodeList) Len() int {
-    return len(n)
+func (nh NodeHeap) Len() int {
+    return len(nh)
 }
 
-func (n NodeList) Swap(i, j int) {
-    n[i], n[j] = n[j], n[i]
+func (nh NodeHeap) Swap(i, j int) {
+    nh[i], nh[j] = nh[j], nh[i]
+    nh[i].index = i
+    nh[j].index = j
 }
 
-func CreateNodeList(s string) NodeList {
+func (nh *NodeHeap) Push(x any) {
+    n := len(*nh)
+    node := x.(*Node)
+    node.index = n
+    *nh = append(*nh, node)
+}
+
+func (nh *NodeHeap) Pop() any {
+    old := *nh
+    n := len(old)
+    node := old[n-1]
+    old[n-1] = nil
+    node.index = -1
+    *nh = old[:n-1]
+    return node
+}
+
+func createNodeHeap(s string) NodeHeap {
     counter := make(map[string]int);
     for _, val := range s {
         strVal := string(val);
@@ -46,14 +75,14 @@ func CreateNodeList(s string) NodeList {
             counter[strVal] += 1;
         }
     }
-    nodeList := make(NodeList, len(counter));
+    nodeHeap := make(NodeHeap, len(counter));
     i := 0;
     for k, v := range counter {
-        nodeList[i] = Node{k, v, nil, nil};
+        nodeHeap[i] = &Node{value: k, freq: v, index: i};
         i++;
     }
-    sort.Sort(nodeList)
-    return nodeList
+    heap.Init(&nodeHeap)
+    return nodeHeap
 }
 
 
@@ -61,7 +90,12 @@ type Tree struct {
     head *Node
 }
 
-// func CreateHuffmanTree(nodeList []Node) Tree {
-//     return
+// func createHuffmanTree(nodeHeap []Node) Tree {
+//     var least Node 
+//     var secondLeast Node
+//     for range nodeHeap {
+//         least, secondLeast, nodeHeap = nodeHeap[len(nodeHeap)-1], nodeHeap[len(nodeHeap)-2], nodeHeap[:len(nodeHeap)-1]
+//
+//     }
 // }
 
