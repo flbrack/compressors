@@ -7,26 +7,38 @@ import (
     "container/heap"
 )
 
+func assertEqual(output any, expected any, t *testing.T) {
+    if output != expected {
+        t.Fatalf("Output: %v\nExpected: %v", output, expected)
+    }
+}
+
+func assertDeepEqual(output any, expected any, t *testing.T) {
+    if !reflect.DeepEqual(output, expected) {
+        t.Fatalf("Output: %v\nExpected: %v", output, expected)
+    }
+}
+
 func TestCreateNodeHeap(t *testing.T) {
     inputs := []string{"AAABBC", "AABBBCB", "BB", "CBCBAAA"};
     expected := []NodeHeap {
         {
-            {value: "A", freq: 3, index: -1},
-            {value: "B", freq: 2, index: -1},
             {value: "C", freq: 1, index: -1},
+            {value: "B", freq: 2, index: -1},
+            {value: "A", freq: 3, index: -1},
         },
         {
-            {value: "B", freq: 4, index: -1},
+            {value: "C", freq: 1, index: -1},
             {value: "A", freq: 2, index: -1},
-            {value: "C", freq: 1, index: -1},
+            {value: "B", freq: 4, index: -1},
         },
         {
             {value: "B", freq: 2, index: -1},
         },
         {
-            {value: "A", freq: 3, index: -1},
             {value: "C", freq: 2, index: -1},
             {value: "B", freq: 2, index: -1},
+            {value: "A", freq: 3, index: -1},
         },
     };
 
@@ -38,12 +50,10 @@ func TestCreateNodeHeap(t *testing.T) {
     for i, nodeHeap := range outputs {
         for j := range nodeHeap {
             node := heap.Pop(&nodeHeap).(*Node)
-            if !reflect.DeepEqual(node, expected[i][j]) {
-                t.Fatalf("Output: %v\nExpected: %v", node, expected[i][j]);
-            }
+            assertDeepEqual(node, expected[i][j], t)
         }
     }
-    fmt.Println("Create heap tests passed");
+    fmt.Println("createNodeHeap tests passed");
 }
 
 func TestIsLeafNode(t *testing.T) {
@@ -63,11 +73,34 @@ func TestIsLeafNode(t *testing.T) {
         outputs[i] = val.isLeaf();
     }
     for i, val := range outputs {
-        if val != expected[i] {
-            t.Fatalf("Output: %v\nExpected: %v", val, expected[i])
-        }
+        assertEqual(val, expected[i], t)
     }
     fmt.Println("isLeaf tests passed")
+}
+
+func TestCreateHuffmanTree(t *testing.T) {
+    inputs := NodeHeap{
+            {value: "A", freq: 3, index: 1},
+            {value: "B", freq: 10, index: 2},
+            {value: "C", freq: 1, index: 3},
+    }
+    heap.Init(&inputs)
+
+    //           CAB 14
+    //           /   \
+    //         CA 4   B 10
+    //        /   \
+    //      C 1   A 3
+
+    o := createHuffmanTree(&inputs)
+    assertEqual(o.head.value, "CAB", t)
+    assertEqual(o.head.freq, 14, t)
+    assertEqual(o.head.left.value, "CA", t)
+    assertEqual(o.head.left.freq, 4, t)
+    assertEqual(o.head.right.value, "B", t)
+    assertEqual(o.head.right.freq, 10, t)
+
+    fmt.Println("createHuffmanTree tests passed")
 }
 
 func TestHuffmanEncoding(t *testing.T) {

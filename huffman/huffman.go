@@ -19,8 +19,8 @@ type Node struct {
     index int
 }
 
-func (n Node) string() string {
-    return fmt.Sprintf("Node: value:%v freq:%v", n.value, n.freq)
+func (n *Node) String() string {
+    return fmt.Sprintf("Node - value: %v freq: %v", n.value, n.freq)
 }
 
 func (n *Node) isLeaf() bool {
@@ -33,7 +33,7 @@ func (nh NodeHeap) Less(i, j int) bool {
     if (nh[j].freq == nh[i].freq) {
         return nh[j].value < nh[i].value
     } else {
-        return nh[j].freq < nh[i].freq
+        return nh[i].freq < nh[j].freq
     }
 }
 
@@ -90,12 +90,20 @@ type Tree struct {
     head *Node
 }
 
-// func createHuffmanTree(nodeHeap []Node) Tree {
-//     var least Node 
-//     var secondLeast Node
-//     for range nodeHeap {
-//         least, secondLeast, nodeHeap = nodeHeap[len(nodeHeap)-1], nodeHeap[len(nodeHeap)-2], nodeHeap[:len(nodeHeap)-1]
-//
-//     }
-// }
+func createHuffmanTree(nodeHeap *NodeHeap) Tree {
+    for nodeHeap.Len() > 1 {
+        first := heap.Pop(nodeHeap).(*Node)
+        second := heap.Pop(nodeHeap).(*Node)
+        var parent = Node{
+            value: first.value + second.value,
+            freq: first.freq + second.freq,
+            left: first,
+            right: second}
+        first.parent = &parent
+        second.parent = &parent
+        heap.Push(nodeHeap, &parent)
+    }
+    finalNode := heap.Pop(nodeHeap).(*Node)
+    return Tree{finalNode}
+}
 
