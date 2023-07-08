@@ -90,14 +90,17 @@ type Tree struct {
     head *Node
 }
 
-func traverse(head *Node) {
+func createDict(head *Node, m *map[string]string) {
     current := head
     if (current.isLeaf()) {
-        fmt.Println(current.value + ": " + bubbleUp(current))
+        _, ok := (*m)[current.value];
+        if !ok {
+            (*m)[current.value] = bubbleUp(current);
+        }
         return
     }
-    traverse(current.left)
-    traverse(current.right)
+    createDict(current.left, m)
+    createDict(current.right, m)
 }
 
 func bubbleUp(node *Node) string {

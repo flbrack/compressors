@@ -103,7 +103,7 @@ func TestCreateHuffmanTree(t *testing.T) {
     fmt.Println("createHuffmanTree tests passed")
 }
 
-func TestTraverse(t *testing.T) {
+func TestCreateDict(t *testing.T) {
     inputs := NodeHeap{
             {value: "A", freq: 3, index: 1},
             {value: "B", freq: 10, index: 2},
@@ -111,6 +111,12 @@ func TestTraverse(t *testing.T) {
             {value: "C", freq: 1, index: 3},
     }
     heap.Init(&inputs)
+    var expected = map[string]string{
+        "A": "001",
+        "B": "1",
+        "C": "000",
+        "D": "01",
+    }
 
     //           CAB 14
     //          /       \
@@ -119,9 +125,11 @@ func TestTraverse(t *testing.T) {
     //   CA 4    D 5
     //  /    \
     // C 1   A 3    
-    o := createHuffmanTree(&inputs)
-
-    traverse(o.head)
+    tree := createHuffmanTree(&inputs)
+    outputDict := make(map[string]string)
+    createDict(tree.head, &outputDict)
+    assertDeepEqual(outputDict, expected, t)
+    fmt.Println("createDict tests passed")
 }
 
 func TestHuffmanEncoding(t *testing.T) {
