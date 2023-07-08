@@ -86,11 +86,11 @@ func TestCreateHuffmanTree(t *testing.T) {
     }
     heap.Init(&inputs)
 
-    //           CAB 14
-    //           /   \
-    //         CA 4   B 10
-    //        /   \
-    //      C 1   A 3
+    //       CAB 14
+    //       /   \
+    //     CA 4   B 10
+    //    /   \
+    //  C 1   A 3
 
     o := createHuffmanTree(&inputs)
     assertEqual(o.head.value, "CAB", t)
@@ -101,6 +101,27 @@ func TestCreateHuffmanTree(t *testing.T) {
     assertEqual(o.head.right.freq, 10, t)
 
     fmt.Println("createHuffmanTree tests passed")
+}
+
+func TestTraverse(t *testing.T) {
+    inputs := NodeHeap{
+            {value: "A", freq: 3, index: 1},
+            {value: "B", freq: 10, index: 2},
+            {value: "D", freq: 5, index: 4},
+            {value: "C", freq: 1, index: 3},
+    }
+    heap.Init(&inputs)
+
+    //           CAB 14
+    //          /       \
+    //       CAD 5       B 10
+    //      /    \
+    //   CA 4    D 5
+    //  /    \
+    // C 1   A 3    
+    o := createHuffmanTree(&inputs)
+
+    traverse(o.head)
 }
 
 func TestHuffmanEncoding(t *testing.T) {

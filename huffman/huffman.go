@@ -90,6 +90,30 @@ type Tree struct {
     head *Node
 }
 
+func traverse(head *Node) {
+    current := head
+    if (current.isLeaf()) {
+        fmt.Println(current.value + ": " + bubbleUp(current))
+        return
+    }
+    traverse(current.left)
+    traverse(current.right)
+}
+
+func bubbleUp(node *Node) string {
+    current := node
+    s := ""
+    for current.parent != nil {
+        if (current.parent.left == current) {
+            s = "0" + s
+        } else {
+            s = "1" + s
+        }
+        current = current.parent
+    }
+    return s
+}
+
 func createHuffmanTree(nodeHeap *NodeHeap) Tree {
     for nodeHeap.Len() > 1 {
         first := heap.Pop(nodeHeap).(*Node)
