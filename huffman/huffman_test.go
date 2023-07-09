@@ -20,7 +20,7 @@ func assertDeepEqual(output any, expected any, t *testing.T) {
 }
 
 func TestCreateNodeHeap(t *testing.T) {
-    inputs := []string{"AAABBC", "AABBBCB", "BB", "CBCBAAA"};
+    inputs := []string{"AAABBC", "AABBBCB", "BB", "CBCBAAA"}
     expected := []NodeHeap {
         {
             {value: "C", freq: 1, index: -1},
@@ -40,11 +40,11 @@ func TestCreateNodeHeap(t *testing.T) {
             {value: "B", freq: 2, index: -1},
             {value: "A", freq: 3, index: -1},
         },
-    };
+    }
 
-    var outputs [4]NodeHeap;
+    var outputs [4]NodeHeap
     for i, val := range inputs {
-        outputs[i] = createNodeHeap(val);
+        outputs[i] = createNodeHeap(val)
     }
 
     for i, nodeHeap := range outputs {
@@ -53,7 +53,7 @@ func TestCreateNodeHeap(t *testing.T) {
             assertDeepEqual(node, expected[i][j], t)
         }
     }
-    fmt.Println("createNodeHeap tests passed");
+    fmt.Println("createNodeHeap tests passed")
 }
 
 func TestIsLeafNode(t *testing.T) {
@@ -68,9 +68,9 @@ func TestIsLeafNode(t *testing.T) {
         {value: "2", freq: 10, right: &Node{value: " ", freq: 2}},
     }
     expected := []bool{true, false, false}
-    var outputs [3]bool;
+    var outputs [3]bool
     for i, val := range inputs {
-        outputs[i] = val.isLeaf();
+        outputs[i] = val.isLeaf()
     }
     for i, val := range outputs {
         assertEqual(val, expected[i], t)
@@ -132,18 +132,30 @@ func TestCreateDict(t *testing.T) {
     fmt.Println("createDict tests passed")
 }
 
-func TestHuffmanEncoding(t *testing.T) {
-    t.Skip("skipping")
-    input := "A_DEAD_DAD_CEDED_A_BAD_BABE_A_BEADED_ABACA_BED";
-    expected := "1000011101001000110010011101100111001001000111110010011111011111100010001111110100111001001011111011101000111111001";
-    output := Encode(input);
+func TestHuffmanEncode(t *testing.T) {
+    input := "A_DEAD_DAD_CEDED_A_BAD_BABE_A_BEADED_ABACA_BED"
+    expected := "1000011101001000110010011101100111001001000111110010011111011111100010001111110100111001001011111011101000111111001"
+    output := Encode(input)
 
     if output != expected {
         t.Fatalf("Output: %s \nExpected: %s",
-                output, expected);
+                output, expected)
     }
 
-    fmt.Println("Encode tests passed");
+    fmt.Println("Encode tests passed")
     fmt.Printf("# Bits in Input: %d \t# Bits in Output: %d\n\n",
-                len(input)*8, len(output));
+                len(input)*8, len(output))
 }
+
+func TestHuffmanDecode(t *testing.T) {
+    input := "1000011101001000110010011101100111001001000111110010011111011111100010001111110100111001001011111011101000111111001"
+    expected := "A_DEAD_DAD_CEDED_A_BAD_BABE_A_BEADED_ABACA_BED"
+
+    nh := createNodeHeap(expected)
+    tree := createHuffmanTree(&nh)
+    output := Decode(input, &tree)
+
+    assertEqual(output, expected, t)
+    fmt.Println("Decode tests passed")
+}
+
