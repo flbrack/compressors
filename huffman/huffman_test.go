@@ -143,7 +143,7 @@ func TestHuffmanEncode(t *testing.T) {
     }
 
     fmt.Println("Encode tests passed")
-    fmt.Printf("# Bits in Input: %d \t# Bits in Output: %d\n\n",
+    fmt.Printf("# Bits in Input: %d \t# Bits in Output: %d\n",
                 len(input)*8, len(output))
 }
 

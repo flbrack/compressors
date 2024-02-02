@@ -15,7 +15,6 @@ func Encode(s string) string {
         output += m[string(l)]
     }
     return output
-    // return "1000011101001000110010011101100111001001000111110010011111011111100010001111110100111001001011111011101000111111001"
 }
 
 func Decode(s string, t *HuffmanTree) string {
